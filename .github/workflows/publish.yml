@@ -1,4 +1,4 @@
-name: Publish navasardyan.am preview
+name: Prepare website preview
 
 on:
   push:
@@ -9,65 +9,69 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: github-pages
+  group: navasardyan-preview
   cancel-in-progress: true
 
 jobs:
-  publish:
-    if: github.ref == 'refs/heads/main'
+  prepare:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Read uploaded ZIP
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Unpack and adapt for project URL
+      - name: Extract website and adapt links for preview
         shell: bash
         run: |
           set -euo pipefail
-          ZIP=navasardyan-am-FINAL-verified.zip
+          ZIP="navasardyan-am-FINAL-verified.zip"
           test -s "$ZIP"
           unzip -t "$ZIP" >/dev/null
-          mkdir -p _site
-          unzip -q "$ZIP" -d _site
-          test -f _site/index.html
-          python3 - <<'PY'
+          SITE="$RUNNER_TEMP/navasardyan-preview"
+          mkdir -p "$SITE"
+          unzip -q "$ZIP" -d "$SITE"
+          test -f "$SITE/index.html"
+          SITE="$SITE" python3 - <<'PY'
           from pathlib import Path
+          import os
           import re
 
-          root = Path("_site")
-          prefix = "/navasardyan-am"
-          # The original site is for the navasardyan.am domain and has
-          # root-relative links. Adapt preview HTML to this project's URL.
-          attr = re.compile(r"""(?P<attr>\b(?:href|src|action|poster)=)(?P<quote>["'])/(?P<path>(?!/|navasardyan-am/)[^"']*)(?P=quote)""")
-          for page in root.rglob("*.html"):
+          site = Path(os.environ["SITE"])
+          base = "/alform-creator/navasardyan-am/preview"
+          attr = re.compile(r"""(?P<attr>\b(?:href|src|action|poster)=)(?P<q>["'])/(?P<path>(?!/)[^"']*)(?P=q)""")
+          def fix(m):
+              path = m.group("path")
+              if path == "" or path.endswith("/"):
+                  path += "index.html"
+              return m.group("attr") + m.group("q") + base + "/" + path + m.group("q")
+          for page in site.rglob("*.html"):
               html = page.read_text(encoding="utf-8")
-              html = attr.sub(lambda m: m.group("attr") + m.group("quote") + prefix + "/" + m.group("path") + m.group("quote"), html)
-              # Preview version should not compete with the production domain.
+              html = attr.sub(fix, html)
               html = re.sub(r'<meta name="robots"[^>]*>', '<meta name="robots" content="noindex,nofollow">', html, flags=re.I)
               if '<meta name="robots" content="noindex,nofollow">' not in html:
                   html = html.replace("</head>", '<meta name="robots" content="noindex,nofollow"></head>', 1)
               page.write_text(html, encoding="utf-8")
-          (root / ".nojekyll").touch()
-          # Do not submit preview URLs to search engines.
-          (root / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
+          css = site / "assets" / "style.css"
+          if css.exists():
+              content = css.read_text(encoding="utf-8")
+              content = content.replace("url(/assets/", "url(" + base + "/assets/")
+              css.write_text(content, encoding="utf-8")
+          (site / ".nojekyll").touch()
+          (site / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
           PY
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages website
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
-      - name: Deploy GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish extracted files to preview branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          SITE="$RUNNER_TEMP/navasardyan-preview"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan preview
+          git rm -rf . >/dev/null || true
+          cp -a "$SITE/." .
+          git add -A
+          git commit -m "Publish website files for external preview"
+          git push --force origin HEAD:refs/heads/preview
