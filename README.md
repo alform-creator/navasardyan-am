@@ -1,22 +1,23 @@
 # navasardyan.am — կայքի նախադիտում
 
-Այս repository-ն պատրաստված է **Արման Նավասարդյանի** անձնական կայքի նախադիտման համար։ GitHub Pages-ի ավտոմատ տեղադրումն արդեն կարգավորված է։
+Արման Նավասարդյանի անձնական կայքի վերջնական ZIP-ը գտնվում է այս նախագծում՝ `navasardyan-am-FINAL-verified.zip`։
 
-## iPhone-ից ավարտելու համար
+## Դիտել անմիջապես հեռախոսով
 
-1. Ներբեռնիր [կայքի ZIP ֆայլը](https://chatgpt.com/) ChatGPT-ի այս զրույցից՝ **navasardyan-am-FINAL-verified.zip** անունով։
-2. iPhone-ի **Files** հավելվածում թող ZIP-ը փակված, **մի՛ բացիր**։
-3. Այս repository-ում GitHub-ի կայքով սեղմիր **Add file → Upload files**։
-4. Ընտրիր **navasardyan-am-FINAL-verified.zip**, ապա **Commit changes**։ Ֆայլի անվանումը մի փոխիր։
-5. GitHub-ում բացիր **Settings → Pages** և **Build and deployment → Source: GitHub Actions**։
-6. Բացիր **Actions** էջը և սպասիր **Publish navasardyan.am preview** գործողության կանաչ ավարտին։
+**[Բացել կայքի փորձնական նախադիտումը](https://raw.githack.com/alform-creator/navasardyan-am/preview/index.html)**
 
-**Նախադիտում**՝ https://alform-creator.github.io/navasardyan-am/
+Նախադիտումն արտաքին raw.githack ծառայությամբ է․ սա պաշտոնական GitHub Pages/դոմեյն չէ։ Առաջին բացման ժամանակ ծառայությունը կարող է հաստատում խնդրել։
 
-Կայքը ZIP-ից ինքնաշխատ կբացվի․ ZIP-ի միջի 48 ֆայլերն առանձին վերբեռնելու կարիք չկա։ Ներքին հղումները ավտոմատ կփոխվեն GitHub Pages-ի `/navasardyan-am/` հասցեի համար։ Նախադիտման էջերին ավելացվում է `noindex`։
+## GitHub-ում ինչ է արվել
 
-**Կարևոր**՝ սա միայն GitHub Pages նախադիտում է։ Պաշտոնական կայքը նախատեսված է **navasardyan.am** դոմեյնի համար։ Չփոխել DNS-ը կամ GitHub Pages-ի custom domain դաշտը առանց լրացուցիչ կարգավորման։
+- ZIP-ը բացվել է ավտոմատ, և բոլոր HTML/CSS/JS/նկարների ֆայլերը տեղադրված են `preview` ճյուղում։
+- `main` ճյուղում պահված է վերջնական ZIP-ը։
+- Եթե ZIP-ը փոխվի, `.github/workflows/publish.yml` workflow-ն կվերաստեղծի `preview` ճյուղը։
 
-## Բովանդակություն
+## Հետագայում GitHub Pages-ը միացնելու համար
 
-Հայերեն, ռուսերեն և անգլերեն էջեր, կախվածությունների բուժման թեմաներ, բլոգ, ՀՏՀ, զանգի և WhatsApp-ի հղումներ։ Կայքը ստատիկ է․ կոնտակտային ձևը բացում է WhatsApp, ոչ թե պահպանում է հայտեր։
+**Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: preview → Folder: /(root) → Save**
+
+Տեղադրման այս տարբերակում Pages-ի GitHub Actions կարգավորումները պետք չեն։ Պաշտոնական կայքի դոմեյնը՝ `navasardyan.am`, դեռ չի միացվել։
+
+_Կայքի preview տարբերակը նախատեսված է միայն փորձարկման համար և չի փոխարինում պաշտոնական դոմեյնում տեղադրմանը։_
