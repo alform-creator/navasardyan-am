@@ -1,0 +1,72 @@
+name: Publish navasardyan.am preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'navasardyan-am-FINAL-verified.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Read uploaded ZIP
+        uses: actions/checkout@v4
+
+      - name: Unpack and adapt for project URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIP=navasardyan-am-FINAL-verified.zip
+          test -s "$ZIP"
+          unzip -t "$ZIP" >/dev/null
+          mkdir -p _site
+          unzip -q "$ZIP" -d _site
+          test -f _site/index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path("_site")
+          prefix = "/navasardyan-am"
+          # The original site is for the navasardyan.am domain and has
+          # root-relative links. Adapt preview HTML to this project's URL.
+          attr = re.compile(r"""(?P<attr>\b(?:href|src|action|poster)=)(?P<quote>["'])/(?P<path>(?!/|navasardyan-am/)[^"']*)(?P=quote)""")
+          for page in root.rglob("*.html"):
+              html = page.read_text(encoding="utf-8")
+              html = attr.sub(lambda m: m.group("attr") + m.group("quote") + prefix + "/" + m.group("path") + m.group("quote"), html)
+              # Preview version should not compete with the production domain.
+              html = re.sub(r'<meta name="robots"[^>]*>', '<meta name="robots" content="noindex,nofollow">', html, flags=re.I)
+              if '<meta name="robots" content="noindex,nofollow">' not in html:
+                  html = html.replace("</head>", '<meta name="robots" content="noindex,nofollow"></head>', 1)
+              page.write_text(html, encoding="utf-8")
+          (root / ".nojekyll").touch()
+          # Do not submit preview URLs to search engines.
+          (root / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
+          PY
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
