@@ -1,16 +1,22 @@
-# NAVASARDYAN.AM — GitHub Pages preview
+# navasardyan.am — կայքի նախադիտում
 
-This repository publishes the final **navasardyan.am** static website for review.
+Այս repository-ն պատրաստված է **Արման Նավասարդյանի** անձնական կայքի նախադիտման համար։ GitHub Pages-ի ավտոմատ տեղադրումն արդեն կարգավորված է։
 
-## iPhone: one-file upload
-1. Download **navasardyan-am-FINAL-verified.zip** from the ChatGPT conversation to Files on your iPhone.
-2. Open this GitHub repository → **Add file** → **Upload files** (in Safari, use Request Desktop Website if the upload control is hidden).
-3. Upload **the ZIP as a single file** in the repository root; keep the exact filename `navasardyan-am-FINAL-verified.zip`.
-4. Select **Commit changes**. GitHub Actions will extract the site and publish its files to the `gh-pages` branch.
-5. Open **Settings → Pages → Build and deployment** → **Deploy from a branch**, branch **gh-pages**, directory **/(root)** → **Save**.
+## iPhone-ից ավարտելու համար
 
-Preview URL: https://alform-creator.github.io/navasardyan-am/
+1. Ներբեռնիր [կայքի ZIP ֆայլը](https://chatgpt.com/) ChatGPT-ի այս զրույցից՝ **navasardyan-am-FINAL-verified.zip** անունով։
+2. iPhone-ի **Files** հավելվածում թող ZIP-ը փակված, **մի՛ բացիր**։
+3. Այս repository-ում GitHub-ի կայքով սեղմիր **Add file → Upload files**։
+4. Ընտրիր **navasardyan-am-FINAL-verified.zip**, ապա **Commit changes**։ Ֆայլի անվանումը մի փոխիր։
+5. GitHub-ում բացիր **Settings → Pages** և **Build and deployment → Source: GitHub Actions**։
+6. Բացիր **Actions** էջը և սպասիր **Publish navasardyan.am preview** գործողության կանաչ ավարտին։
 
-The workflow changes only the preview copies of the internal root-relative links to the GitHub Pages project path. It adds noindex to the preview to avoid competing with the final official domain. The original ZIP remains unchanged.
+**Նախադիտում**՝ https://alform-creator.github.io/navasardyan-am/
 
-The professional website's official destination is https://navasardyan.am/ — **do not** set that custom domain here until its DNS is configured and the site is ready for production.
+Կայքը ZIP-ից ինքնաշխատ կբացվի․ ZIP-ի միջի 48 ֆայլերն առանձին վերբեռնելու կարիք չկա։ Ներքին հղումները ավտոմատ կփոխվեն GitHub Pages-ի `/navasardyan-am/` հասցեի համար։ Նախադիտման էջերին ավելացվում է `noindex`։
+
+**Կարևոր**՝ սա միայն GitHub Pages նախադիտում է։ Պաշտոնական կայքը նախատեսված է **navasardyan.am** դոմեյնի համար։ Չփոխել DNS-ը կամ GitHub Pages-ի custom domain դաշտը առանց լրացուցիչ կարգավորման։
+
+## Բովանդակություն
+
+Հայերեն, ռուսերեն և անգլերեն էջեր, կախվածությունների բուժման թեմաներ, բլոգ, ՀՏՀ, զանգի և WhatsApp-ի հղումներ։ Կայքը ստատիկ է․ կոնտակտային ձևը բացում է WhatsApp, ոչ թե պահպանում է հայտեր։
